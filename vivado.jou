@@ -1,0 +1,28 @@
+#-----------------------------------------------------------
+# Vivado v2018.3 (64-bit)
+# SW Build 2405991 on Thu Dec  6 23:38:27 MST 2018
+# IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+# Start of session at: Tue Jul  6 19:54:39 2021
+# Process ID: 3284
+# Current directory: C:/Users/Administrator/Desktop/CPU_SingleCycle
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent4152 C:\Users\Administrator\Desktop\CPU_SingleCycle\CPU_SingleCycle.xpr
+# Log file: C:/Users/Administrator/Desktop/CPU_SingleCycle/vivado.log
+# Journal file: C:/Users/Administrator/Desktop/CPU_SingleCycle\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/Administrator/Desktop/CPU_SingleCycle/CPU_SingleCycle.xpr
+update_compile_order -fileset sources_1
+close [ open C:/Users/Administrator/Desktop/CPU_SingleCycle/CPU_SingleCycle.srcs/sources_1/new/CPU.v w ]
+add_files C:/Users/Administrator/Desktop/CPU_SingleCycle/CPU_SingleCycle.srcs/sources_1/new/CPU.v
+update_compile_order -fileset sources_1
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top CPU [current_fileset]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
