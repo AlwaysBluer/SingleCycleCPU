@@ -55,11 +55,11 @@
 
 //----------- Begin Cut here for INSTANTIATION Template ---// INST_TAG
 dataRam your_instance_name (
-  .a(a),        // input wire [13 : 0] a
-  .d(d),        // input wire [31 : 0] d
-  .clk(clk),    // input wire clk
-  .we(we),      // input wire we
-  .qspo(qspo)  // output wire [31 : 0] qspo
+  .a(a),      // input wire [13 : 0] a
+  .d(d),      // input wire [31 : 0] d
+  .clk(clk),  // input wire clk
+  .we(we),    // input wire we
+  .spo(spo)  // output wire [31 : 0] spo
 );
 // INST_TAG_END ------ End INSTANTIATION Template ---------
 

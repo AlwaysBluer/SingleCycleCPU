@@ -43,7 +43,7 @@ assign DataW = (WDataSel == 1)? DataIn : PC+4;
 //没写入数据之前全部初始化为0
 initial begin
     for(i = 1;i<32;i = i+1)
-        DataReg[i] <= 0;
+        DataReg[i] = 0;
 end
 
 //上升沿PC更新，同时Data写入寄存器
@@ -53,10 +53,10 @@ always@(posedge clk)begin
 end
 
 //下降沿读数据
-always@(negedge clk or posedge rst_n) begin
+always@(negedge clk or negedge rst_n) begin
     if(rst_n == 0) begin
         for (i = 0;i < 32;i = i + 1)
-            DataReg[i] <= 0;
+            DataReg[i] = 0;
     end
     else begin 
         Data1 <= (rs1 == 5'b0)? 32'b0: DataReg[rs1];

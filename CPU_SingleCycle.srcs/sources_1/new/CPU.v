@@ -22,41 +22,53 @@
 
 module CPU(
     input wire clk,
-    input wire rst_n
+    input wire rst_n,
+    output wire[31:0]PC
     );
     wire [31:0]Rs1_value;
-    wire [31:0]Imm;
     wire [31:0]PC_out;
     wire [1:0]PCsel;//控制信号,控制单元生成
-    
+     wire [2:0]ImmSel;//控制信号,控制单元生成
+     wire [31:0]instruction;
+    wire [31:0]Data1;//Rs1_value
+    wire [31:0]Data2;//Rs2_value
+    wire [31:0]SelectedImm;//Imm
+    wire [31:0]DataIn;// 在Mem和ALU中结果之一，输入进去后通过WDataSel选择写入rd的是PC+4还是DataIn
+    wire WDataSel;//控制信号,控制单元生成
+    wire WEn;//控制信号,控制单元生成
+    assign PC = PC_out;
+
+     wire Asel;//控制信号,控制单元生成
+    wire Bsel;//控制信号,控制单元生成
+    wire [4:0]ALUop;//控制信号,控制单元生成
+    wire [31:0]value;//计算结果
+    wire Branch;
+    wire zero;
     Top_PC pc(
     .PCsel(PCsel),
     .clk(clk),
     .rst_n(rst_n),
-    .Rs1_value(Rs1_value),
-    .Imm(Imm),
+    .Rs1_value(Data1),
+    .Imm(SelectedImm),
     .PC_out(PC_out)
     );
     
-    wire [31:0]instruction;
+    
     IROM  irom(
     .PC(PC_out),
     .instruction(instruction)
     );
     
-    wire [2:0]ImmSel;//控制信号,控制单元生成
-    wire [31:0]SelectedImm;
+   
+
     ImmGenerator ImmGen(
     .Inst(instruction[31:7]),
     .ImmSel(ImmSel),
     .SelectedImm(SelectedImm)
     );
     
-    wire [31:0]DataIn;// 在Mem和ALU中结果之一，输入进去后通过WDataSel选择写入rd的是PC+4还是DataIn
-    wire WDataSel;//控制信号,控制单元生成
-    wire WEn;//控制信号,控制单元生成
-    wire [31:0]Data1;
-    wire [31:0]Data2;
+  
+   
     RF regfile(
     .clk(clk),
     .rst_n(rst_n),
@@ -71,18 +83,14 @@ module CPU(
     .Data2(Data2)
     );
     
-    wire Asel;//控制信号,控制单元生成
-    wire Bsel;//控制信号,控制单元生成
-    wire [4:0]ALUop;//控制信号,控制单元生成
-    wire [31:0]value;//计算结果
-    wire Branch;
-    wire zero;
+   
     ALU alu(
     .A(Data1),
     .PC_out(PC_out),
     .Asel(Asel),
     .Imm(SelectedImm),
     .Bsel(Bsel),
+    .B(Data2),
     .ALUop(ALUop),
     .value(value),
     .Branch(Branch),
@@ -92,7 +100,7 @@ module CPU(
     wire [31:0]rd_data_o;
     wire MemWriteEn;//控制信号,控制单元生成
     DRAM dram(
-    .clk(clk),
+    .clk_i(clk),
     .addr_i(value), //地址就是经过ALU计算输出的结果
     .rd_data_o(rd_data_o),
     .memwr_i(MemWriteEn),
@@ -102,8 +110,22 @@ module CPU(
     wire MemSel;//控制信号,控制单元生成
     assign DataIn = (MemSel == 1)? rd_data_o : value;
     
-    
-    
-    
+    CTRL_Unit ctrlunit(
+    .opcode(instruction[6:0]),
+    .rs1(instruction[19:15]),
+    .rs2(instruction[24:20]),
+    .func3(instruction[14:12]),
+    .Branch(Branch),
+    .func7(instruction[31:25]),
+    .ImmSel(ImmSel),
+    .op_A_sel(Asel),
+    .op_B_sel(Bsel),
+    .ALUop(ALUop),
+    .WDataSel(WDataSel),
+    .MemSel(MemSel),
+    .MemWriteEn(MemWriteEn),
+    .RegWriteEn(WEn),
+    .PCSel(PCsel)
+    );
     
 endmodule

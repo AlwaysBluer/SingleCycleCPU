@@ -26,14 +26,14 @@ module CTRL_Unit(
     input wire[4:0] rs2,
     input wire[2:0] func3,
     input wire[6:0] func7,
-    output reg[1:0] ImmSel,//立即数输出选择信号,对应I, S，U, B
+    input wire Branch, //分支判断信号，处理
+    output reg[2:0] ImmSel,//立即数输出选择信号,对应I, S，U, B
     output reg op_A_sel,// A路输入信号选择，0为PC，1为rs1
     output reg op_B_sel,// B路输入信号选择，0为立即数，1为rs2
-    output reg[5:0] ALUop, //ALU控制信号
+    output reg[4:0] ALUop, //ALU控制信号
     output reg WDataSel,//控制写入rd的是PC+4 还是 ALU_value / Mem_data 选择输出值
     output reg MemSel,  //控制输出为ALU_value-0 / Mem_data-1中的一个
-    output reg MemWriteEn, //写入Mem的使能信号
-    output reg Branch, //分支控制信号,这个信号我觉得可有可无，因为在给出op或者func3,func7的时候，就已经告诉了执行的是跳转指令
+    output reg MemWriteEn, //写入Mem的使能信号 
     output reg RegWriteEn, //寄存器写使能信号
     output reg[1:0]PCSel
     );
@@ -43,165 +43,301 @@ module CTRL_Unit(
         //R型指令
         7'b0110011:
              begin
-                ImmSel <= 2'b00; //不涉及立即数操作，所以无所谓
-                op_A_sel <= 1;
-                op_B_sel <= 1;//全部为寄存器操作数
-                WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
-                MemSel <= 0; //控制输出为ALU_value-0 
-                MemWriteEn <= 0;//不写入内存
-                Branch <= 0;//不分支
-                RegWriteEn <= 1;//存入rd
-                PCSel <= 2'b00;//PC = PC + 4
-                if(func3 == 3'b000 && func7 == 7'b0000000) //add
+               
+                if(func3 == 3'b000 && func7 == 7'b0000000) begin//add
                     ALUop <= 5'b00000;
-                else if(func3 == 3'b000 && func7 == 7'b0100000)//sub
+					ImmSel <= 3'b000; //不涉及立即数操作，所以无所谓
+					op_A_sel <= 1;
+					op_B_sel <= 1;//全部为寄存器操作数
+					WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
+					MemSel <= 0; //控制输出为ALU_value-0 
+					MemWriteEn <= 0;//不写入内存
+					RegWriteEn <= 1;//存入rd
+					PCSel <= 2'b00;//PC = PC + 4
+				end
+                else if(func3 == 3'b000 && func7 == 7'b0100000) begin//sub
                     ALUop <= 5'b00001;
-                else if(func3 == 3'b111 && func7 == 7'b0000000)//and
+					ImmSel <= 3'b000; //不涉及立即数操作，所以无所谓
+					op_A_sel <= 1;
+					op_B_sel <= 1;//全部为寄存器操作数
+					WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
+					MemSel <= 0; //控制输出为ALU_value-0 
+					MemWriteEn <= 0;//不写入内存
+					RegWriteEn <= 1;//存入rd
+					PCSel <= 2'b00;//PC = PC + 4
+				end
+                else if(func3 == 3'b111 && func7 == 7'b0000000) begin//and
                     ALUop <= 5'b00101;
-                else if(func3 == 3'b110 && func7 == 7'b0000000)//or
+					ImmSel <= 3'b000; //不涉及立即数操作，所以无所谓
+					op_A_sel <= 1;
+					op_B_sel <= 1;//全部为寄存器操作数
+					WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
+					MemSel <= 0; //控制输出为ALU_value-0 
+					MemWriteEn <= 0;//不写入内存
+					RegWriteEn <= 1;//存入rd
+					PCSel <= 2'b00;//PC = PC + 4
+				end
+                else if(func3 == 3'b110 && func7 == 7'b0000000) begin//or
                     ALUop <= 5'b00100;
-                else if(func3 == 3'b100 && func7 == 7'b0000000)//xor
+					ImmSel <= 3'b000; //不涉及立即数操作，所以无所谓
+					op_A_sel <= 1;
+					op_B_sel <= 1;//全部为寄存器操作数
+					WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
+					MemSel <= 0; //控制输出为ALU_value-0 
+					MemWriteEn <= 0;//不写入内存
+					RegWriteEn <= 1;//存入rd
+					PCSel <= 2'b00;//PC = PC + 4
+				end
+                else if(func3 == 3'b100 && func7 == 7'b0000000) begin//xor
                     ALUop <= 5'b00110;
-                else if(func3 == 3'b001 && func7 == 7'b0000000)//sll
+					ImmSel <= 3'b000; //不涉及立即数操作，所以无所谓
+					op_A_sel <= 1;
+					op_B_sel <= 1;//全部为寄存器操作数
+					WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
+					MemSel <= 0; //控制输出为ALU_value-0 
+					MemWriteEn <= 0;//不写入内存
+					RegWriteEn <= 1;//存入rd
+					PCSel <= 2'b00;//PC = PC + 4
+				end
+                else if(func3 == 3'b001 && func7 == 7'b0000000) begin//sll
                     ALUop <= 5'b00010;
-                else if(func3 == 3'b101 && func7 == 7'b0000000)//srl
+					ImmSel <= 3'b000;
+					op_A_sel <= 1;
+					op_B_sel <= 1;//寄存器rs2所在的5位当成立即数进行进行移位运算
+					WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
+					MemSel <= 0; //控制输出为ALU_value-0 
+					MemWriteEn <= 0;//不写入内存
+					RegWriteEn <= 1;//存入rd
+					PCSel <= 2'b00;//PC = PC + 4
+				end
+                else if(func3 == 3'b101 && func7 == 7'b0000000) begin//srl
                     ALUop <= 5'b00011;
-                else if(func3 == 3'b101 && func7 == 7'b0100000)//算数右移sra
+					ImmSel <= 3'b000;
+					op_A_sel <= 1;
+					op_B_sel <= 1;///寄存器rs2所在的5位当成立即数进行进行移位运算
+					WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
+					MemSel <= 0; //控制输出为ALU_value-0 
+					MemWriteEn <= 0;//不写入内存
+					RegWriteEn <= 1;//存入rd
+					PCSel <= 2'b00;//PC = PC + 4
+				end
+                else if(func3 == 3'b101 && func7 == 7'b0100000) begin//算数右移sra
                     ALUop <= 5'b00111;
+					ImmSel <= 3'b000;
+					op_A_sel <= 1;
+					op_B_sel <= 1;///寄存器rs2所在的5位当成立即数进行进行移位运算
+					WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
+					MemSel <= 0; //控制输出为ALU_value-0 
+					MemWriteEn <= 0;//不写入内存
+					RegWriteEn <= 1;//存入rd
+					PCSel <= 2'b00;//PC = PC + 4
+				end
              end
          //I型指令
          7'b0010011:
             begin
                 if(func3 == 3'b000) begin//addi
                     ALUop <= 5'b00000;
-                    ImmSel <= 2'b00;
+                    ImmSel <= 3'b000;
                     op_A_sel <= 1; //A为寄存器操作数
                     op_B_sel <= 0; //B为立即数
                     WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
                     MemSel <= 0; //控制输出为ALU_value-0 
                     MemWriteEn <= 0;//不写入内存
-                    Branch <= 0;//不分支
                     RegWriteEn <= 1;//存入rd
                     PCSel <= 2'b00;//PC = PC + 4
                  end
                 else if(func3 == 3'b111) begin//andi
                     ALUop <= 5'b00101;
-                    ImmSel <= 2'b00;
+                    ImmSel <= 3'b000;
                     op_A_sel <= 1; //A为寄存器操作数
                     op_B_sel <= 0; //B为立即数
                     WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
                     MemSel <= 0; //控制输出为ALU_value-0 
                     MemWriteEn <= 0;//不写入内存
-                    Branch <= 0;//不分支
                     RegWriteEn <= 1;//存入rd
                     PCSel <= 2'b00;//PC = PC + 4
                 end
                 else if(func3 == 3'b110) begin//ori
                     ALUop <= 5'b00100;
-                    ImmSel <= 2'b00;
+                    ImmSel <= 3'b000;
                     op_A_sel <= 1; //A为寄存器操作数
                     op_B_sel <= 0; //B为立即数
                     WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
                     MemSel <= 0; //控制输出为ALU_value-0 
                     MemWriteEn <= 0;//不写入内存
-                    Branch <= 0;//不分支
                     RegWriteEn <= 1;//存入rd
                     PCSel <= 2'b00;//PC = PC + 4
                 end
                 else if(func3 == 3'b100) begin//xori
                     ALUop <= 5'b00110;
-                    ImmSel <= 2'b00;
+                    ImmSel <= 3'b000;
                     op_A_sel <= 1; //A为寄存器操作数
                     op_B_sel <= 0; //B为立即数
                     WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
                     MemSel <= 0; //控制输出为ALU_value-0 
                     MemWriteEn <= 0;//不写入内存
-                    Branch <= 0;//不分支
                     RegWriteEn <= 1;//存入rd
                     PCSel <= 2'b00;//PC = PC + 4
                  end
                 else if(func3 == 3'b001 && func7 == 7'b0000000) begin//slli
                     ALUop <= 5'b00010;
-                    ImmSel <= 2'b00;
+                    ImmSel <= 3'b000;
                     op_A_sel <= 1; //A为寄存器操作数
                     op_B_sel <= 0; //B为立即数
                     WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
                     MemSel <= 0; //控制输出为ALU_value-0 
                     MemWriteEn <= 0;//不写入内存
-                    Branch <= 0;//不分支
                     RegWriteEn <= 1;//存入rd
                     PCSel <= 2'b00;//PC = PC + 4
                  end
                 else if(func3 == 3'b101 && func7 == 7'b0000000) begin//srli
                     ALUop <= 5'b00011;
-                    ImmSel <= 2'b00;
+                    ImmSel <= 3'b000;
                     op_A_sel <= 1; //A为寄存器操作数
                     op_B_sel <= 0; //B为立即数
                     WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
                     MemSel <= 0; //控制输出为ALU_value-0 
                     MemWriteEn <= 0;//不写入内存
-                    Branch <= 0;//不分支
                     RegWriteEn <= 1;//存入rd
                     PCSel <= 2'b00;//PC = PC + 4
                 end
                 else if(func3 == 3'b101 && func7 == 7'b0100000) begin//srai
                     ALUop <= 5'b00111;
-                    ImmSel <= 2'b00;
+                    ImmSel <= 3'b000;
                     op_A_sel <= 1; //A为寄存器操作数
                     op_B_sel <= 0; //B为立即数
                     WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
                     MemSel <= 0; //控制输出为ALU_value-0 
                     MemWriteEn <= 0;//不写入内存
-                    Branch <= 0;//不分支
                     RegWriteEn <= 1;//存入rd
                     PCSel <= 2'b00;//PC = PC + 4
                 end
-                else if(func3 == 3'b010) begin // lw:从地址(rs1)+sext(offset)读取四个字节，经符号扩展后写入寄存器rd
+       
+             else begin end
+            end
+            
+         7'b0000011:begin//lw
                     ALUop <= 5'b00000; 
-                    ImmSel = 2'b00;
+                    ImmSel <= 3'b000;
                     op_A_sel <= 1;
                     op_B_sel <= 0;//立即数
                     WDataSel <= 1;//写入数据为DataIn  ALU_value / Mem_data 选择输出值
                     MemSel <= 1;//选择Mem_data
                     MemWriteEn <= 0;
-                    Branch <= 0;
                     RegWriteEn <= 1;
                     PCSel <= 2'b00;// PC = PC + 4；
-                end
-                else if(func3 == 3'b000) begin //jalr：将PC设置为(rs1)+sext(offset)，把计算出的地址的最低位设为0，并将原PC+4的值写入寄存器rd。rd默认为1。
-                    ImmSel = 2'b00;
+         end
+         
+         7'b1100111:begin //jalr
+                    ImmSel <= 3'b000;
                     ALUop <= 5'b00000;
                     op_A_sel <= 1;
                     op_B_sel <= 0;
                     WDataSel <= 0; //写入rd的为PC+4
                     MemSel <= 0;
                     MemWriteEn <= 0;
-                    Branch <= 0;
                     RegWriteEn <= 1;
                     PCSel <= 2'b11; //写入PC的为PCC
-                end
-            end
+         end
+         
          7'b0100011: begin //S型指令 sw：将寄存器rs2存入内存地址(rs1)+sext(offset),这个指令通过ALU计算地址，不需要写入寄存器中
             if(func3 == 3'b010) begin
-                ImmSel = 2'b01;//S型立即数
+                ImmSel <= 3'b001;//S型立即数
                 ALUop <= 5'b00000;//add操作
                 op_A_sel <= 1;//rs1
                 op_B_sel <= 0;//立即数
                 WDataSel <= 1;
                 MemSel <= 1;//这两个信号其实没什么用？
                 MemWriteEn <= 1;
-                Branch <= 0;
                 RegWriteEn <= 0;
                 PCSel <= 2'b00;// PC = PC + 4；
             end
             else  begin end
             end
          7'b1100011:begin//B型指令
+           if(func3 == 3'b000)  begin//beq
+                ImmSel <= 3'b011;
+                ALUop <= 5'b01000;
+                op_A_sel <= 1;
+                op_B_sel <= 1;
+                WDataSel <= 0;
+                MemSel <= 0;
+                MemWriteEn <= 0;
+                RegWriteEn <= 0;
+                PCSel <= (Branch == 1)? 2'b01 : 2'b00; //branch为1的话PC为PC+立即数，否则为PC+4
+           end
+           else if(func3 == 3'b001) begin//bne
+                ImmSel <= 3'b011;
+                ALUop <= 5'b01001;
+                op_A_sel <= 1;
+                op_B_sel <= 1;
+                WDataSel <= 0;
+                MemSel <= 0;
+                MemWriteEn <= 0;
+                RegWriteEn <= 0;
+                PCSel <= (Branch == 1)? 2'b01: 2'b00;
+           end
+           else if(func3 == 3'b100) begin//blt
+                ImmSel <= 3'b011;
+                ALUop <= 5'b01010;
+                op_A_sel <= 1;
+                op_B_sel <= 1;
+                WDataSel <= 0;
+                MemSel <= 0;
+                MemWriteEn <= 0;
+                RegWriteEn <= 0;
+                PCSel <= (Branch == 1)? 2'b01: 2'b00;
+           end
+           else if(func3 == 3'b101)begin//bge
+                ImmSel <= 3'b011;
+                ALUop <= 5'b01011;
+                op_A_sel <= 1;
+                op_B_sel <= 1;
+                WDataSel <= 0;
+                MemSel <= 0;
+                MemWriteEn <= 0;
+                RegWriteEn <= 0;
+                PCSel <= (Branch == 1)? 2'b01: 2'b00;
+           end
+           else begin end
          end
          
          7'b0110111:begin//U型指令
+         //lui:将符号扩展的20位立即数逻辑左移12位，结果写入寄存器rd。
+                ImmSel <= 3'b010;
+                ALUop <=  5'b01100;
+                op_A_sel <= 1;
+                op_B_sel <= 0;
+                WDataSel <= 1;
+                MemSel <= 0;
+                MemWriteEn <= 0;
+                RegWriteEn <= 1;
+                PCSel <= 2'b00;
          end
-         7'b1101111:begin//j型指令            
+         
+         7'b1101111:begin//j型指令     
+                ImmSel <= 3'b100;
+                ALUop <= 5'b00000;
+                op_A_sel <= 1;
+                op_B_sel <= 0;
+                WDataSel <= 0;//写入pc+4
+                MemSel <= 0;
+                MemWriteEn <= 0;
+                RegWriteEn <= 1;
+                PCSel <= 2'b01;       
+         end
+         
+         default:begin
+            ImmSel <= 3'b000;
+            ALUop <= 5'b00000;
+            op_A_sel <= 1;
+            op_B_sel <= 1;
+            WDataSel <= 1;
+            MemSel <= 0;
+            MemWriteEn <= 0;
+            RegWriteEn <= 0;
+            PCSel <= 2'b00;
          end
         endcase
     end

@@ -58,7 +58,7 @@ COMPONENT dataRam
     d : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
     clk : IN STD_LOGIC;
     we : IN STD_LOGIC;
-    qspo : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+    spo : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
 END COMPONENT;
 -- COMP_TAG_END ------ End COMPONENT Declaration ------------
@@ -73,7 +73,7 @@ your_instance_name : dataRam
     d => d,
     clk => clk,
     we => we,
-    qspo => qspo
+    spo => spo
   );
 -- INST_TAG_END ------ End INSTANTIATION Template ---------
 

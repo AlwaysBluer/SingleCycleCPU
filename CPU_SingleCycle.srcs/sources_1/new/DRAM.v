@@ -28,13 +28,13 @@ module DRAM(
     input wire[31:0]wr_data_i //要写入的数据
     );
     wire ram_clk;
-    assign ram_clk = !clk_i; // 因为芯片的固有延迟，DRAM的地址线来不及在时钟上升沿准备好,
-// 使得时钟上升沿数据读出有误。所以采用反相时钟，使得读出数据比地址准备好要晚大约半个时钟,
-// 从而能够获得正确的数据。
+    assign ram_clk = !clk_i; 
+    //DRAM读数据是输入地址马上给出数据吗
+    //DRAM写数据是输入地址，输入数据后，什么时候写入数据
     dataRam U_dram(
     .clk(clk_i),
     .a(addr_i[15:2]),
-    .qspo(rd_data_o),
+    .spo(rd_data_o),
     .we(memwr_i),
     .d(wr_data_i)
     );

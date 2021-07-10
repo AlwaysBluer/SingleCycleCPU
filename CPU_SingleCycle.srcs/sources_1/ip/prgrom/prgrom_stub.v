@@ -1,13 +1,13 @@
 // Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2018.3 (win64) Build 2405991 Thu Dec  6 23:38:27 MST 2018
-// Date        : Thu Jul  1 21:58:55 2021
-// Host        : 612-14 running 64-bit major release  (build 9200)
+// Date        : Fri Jul  9 19:50:43 2021
+// Host        : 612-19 running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode synth_stub -rename_top prgrom -prefix
-//               prgrom_ program_stub.v
-// Design      : program
+//               prgrom_ prgrom_stub.v
+// Design      : prgrom
 // Purpose     : Stub declaration of top-level module interface
-// Device      : xc7k70tfbv676-1
+// Device      : xc7a100tfgg484-1
 // --------------------------------------------------------------------------------
 
 // This empty module with port declaration file causes synthesis tools to infer a black box for IP.

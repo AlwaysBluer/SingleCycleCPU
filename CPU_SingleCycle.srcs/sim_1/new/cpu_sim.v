@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2021/07/01 22:00:21
+// Create Date: 2021/07/07 21:26:59
 // Design Name: 
-// Module Name: IROM
+// Module Name: cpu_sim
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,12 +20,15 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module IROM(
-    input wire[31:0] PC,
-    output wire[31:0] instruction
+module cpu_sim(
     );
-    prgrom U0_irom(
-    .a(PC[15:2]),
-    .spo(instruction)
+    
+    reg clk = 1;
+    reg rst_n = 1;
+    always #10 clk = ~clk;
+    
+    CPU mycpu(
+    .clk(clk),
+    .rst_n(rst_n)
     );
 endmodule

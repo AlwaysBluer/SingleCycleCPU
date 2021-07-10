@@ -32,6 +32,6 @@ module NPC(
     assign PC_offset = PC + Imm;
     assign Rs1_offset = Rs1_value + Imm;
     assign PC4 = PC + 4;
-    assign PCC = (PC + Imm) & (~1);
+    assign PCC = (Rs1_value + Imm) & (~1);
     
 endmodule

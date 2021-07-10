@@ -33,7 +33,11 @@ module PC(
     reg [31:0]PC;
     assign PC_out = PC;
     
-    always@(posedge clk or posedge rst_n)begin
+    initial begin
+        PC = 32'b0;
+    end
+    
+    always@(posedge clk or negedge rst_n)begin
         if(rst_n == 0)//µÕµÁ∆Ω∏¥Œª
             PC <= 32'b0;
         else begin

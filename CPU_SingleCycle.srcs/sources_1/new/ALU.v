@@ -35,24 +35,28 @@ module ALU(
     
    wire [31:0]op_A;
    wire [31:0]op_B;
+   wire [31:0]temp;
    assign op_A = (Asel == 1)? A: PC_out; //A的选择信号为1的时候，操作数为A,否则为NPC
    assign op_B = (Bsel == 1)? B: Imm; //B的选择信号为1的时候，操作数为B，否则为立即数Imm
-    
-   wire [31:0] Arithmetic; //算数运算ALU计算结果
-   wire [31:0] Logistic; //逻辑运算ALU运算结果
-   wire [31:0] Bitmov; //移位运算ALU运算结果
+   assign temp = op_A - op_B;
+
     //比较型指令的设计分为BranchCompare 和计算模块，前一个模块的作用是比较计算的结果并且更新相应的符号位，计算模块就是算跳转的地址
     always@(*)begin
         case(ALUop)
         5'b00000: value <= op_A + op_B; // 加法 add
         5'b00001: value <= op_A - op_B; //减法 sub
-        5'b00010: value <= op_A << op_B; //左移运算
-        5'b00011: value <= op_A >> op_B; //右移运算，算数
+        5'b00010: value <= op_A << op_B[4:0]; //左移运算
+        5'b00011: value <= op_A >> op_B[4:0]; //右移运算，算数
         5'b00100: value <= op_A|op_B;    //或运算
         5'b00101: value <= op_A & op_B;  //与运算
         5'b00110: value <= op_A ^ op_B;  //异或运算
-        5'b00111: value <= ($signed(op_B)) >>> op_A;//逻辑右移
-        //b型指令用减法指令实现，
+        5'b00111: value <= ($signed(op_A)) >>> op_B[4:0];//逻辑右移:sra指令是将rs1操作数右移rs2位，不是（rs2)位，这怎么实现？？
+        5'b01000: Branch <= (op_A == op_B)? 1 : 0;//beq
+        5'b01001: Branch <= (op_A != op_B)? 1 : 0;//bne
+        5'b01010: Branch <= (temp[31] == 1'b1)? 1'b1 : 1'b0;               // (op_A < op_B)? 1 : 0;//blt
+        5'b01011: Branch <= (temp[31] == 1'b0)? 1'b1 : 1'b0;//bge branch为1，则输出到控制单元生成事中控制信号的时候就必须要注意关于PCSel的生成
+        5'b01100: value <= op_B; //lui指令，直接把生成的u型立即数写入到寄存器文件中
+        default: value <= 0;
         endcase
     end
 endmodule
